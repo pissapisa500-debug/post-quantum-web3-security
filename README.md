@@ -30,7 +30,17 @@ We are building practical, hybrid post-quantum tools focused on Ethereum and L2 
 - Open-source v0.1
 - Examples for wallet integration
 - Community feedback and security audit preparation
+## Tech Stack
+- **Language**: Rust (focus on performance and security)
+- **Cryptography**: pqcrypto + ethers.rs
+- **Target**: Ethereum + L2s
 
+## Getting Started
+
+```bash
+git clone https://github.com/pissapisa500-debug/post-quantum-web3-security.git
+cd post-quantum-web3-security
+cargo build
 ## Team
 Two independent pseudonymous developers with experience in cryptography and blockchain development. Full team will be expanded after initial funding.
 
