@@ -1,0 +1,13 @@
+[package]
+name = "pq-web3-defender"
+version = "0.1.0"
+edition = "2021"
+description = "Post-quantum cryptography tools for Web3 security"
+license = "MIT"
+
+[dependencies]
+pqcrypto-dilithium = "0.3"
+pqcrypto-traits = "0.3"
+ethers = "2.0"          # for Ethereum integration
+anyhow = "1.0"
+tokio = { version = "1", features = ["full"] }
