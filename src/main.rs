@@ -1,5 +1,9 @@
 use clap::{Parser, Subcommand};
-use falconed::{SigningKey, VerifyingKey};
+use falconed::{
+    signing::{SIGNING_KEY_SIZE, SigningKey},
+    verifying::{VERIFYING_KEY_SIZE, VerifyingKey},
+    signature::SIGNATURE_SIZE,
+};
 use rand_core::OsRng;
 use std::fs;
 use std::path::PathBuf;
@@ -77,14 +81,18 @@ fn generate_keys(output: &PathBuf) {
     let sk_path = output.with_extension("sk");
     let pk_path = output.with_extension("pk");
     
-    fs::write(&sk_path, sk.to_bytes()).unwrap();
-    fs::write(&pk_path, pk.to_bytes()).unwrap();
+    // Конвертируем в массивы фиксированного размера
+    let sk_bytes: [u8; SIGNING_KEY_SIZE] = sk.to_bytes();
+    let pk_bytes: [u8; VERIFYING_KEY_SIZE] = pk.to_bytes();
+    
+    fs::write(&sk_path, sk_bytes).unwrap();
+    fs::write(&pk_path, pk_bytes).unwrap();
     
     println!("✅ Private key saved to:   {}", sk_path.display());
     println!("✅ Public key saved to:    {}", pk_path.display());
     println!("\n📊 Key sizes:");
-    println!("   Private key: {} bytes", sk.to_bytes().len());
-    println!("   Public key:  {} bytes", pk.to_bytes().len());
+    println!("   Private key: {} bytes", SIGNING_KEY_SIZE);
+    println!("   Public key:  {} bytes", VERIFYING_KEY_SIZE);
 }
 
 fn sign_message(key_path: &PathBuf, message: &str) {
@@ -92,14 +100,19 @@ fn sign_message(key_path: &PathBuf, message: &str) {
     println!("   Message: \"{}\"", message);
     
     let sk_bytes = fs::read(key_path).expect("Failed to read private key");
-    let sk = SigningKey::from_bytes(&sk_bytes).expect("Invalid private key");
+    // Конвертируем Vec<u8> в массив фиксированного размера
+    let sk_array: [u8; SIGNING_KEY_SIZE] = sk_bytes
+        .try_into()
+        .expect("Invalid private key size");
+    let sk = SigningKey::from_bytes(&sk_array).expect("Invalid private key");
     
     let signature = sk.sign(message.as_bytes()).expect("Signing failed");
-    let sig_hex = hex::encode(signature.to_bytes());
+    let sig_bytes: [u8; SIGNATURE_SIZE] = signature.to_bytes();
+    let sig_hex = hex::encode(sig_bytes);
     
     println!("✅ Signature (hex):");
     println!("{}", sig_hex);
-    println!("\n📊 Signature size: {} bytes", signature.to_bytes().len());
+    println!("\n📊 Signature size: {} bytes", SIGNATURE_SIZE);
 }
 
 fn verify_signature(pubkey_path: &PathBuf, message: &str, sig_hex: &str) {
@@ -107,10 +120,17 @@ fn verify_signature(pubkey_path: &PathBuf, message: &str, sig_hex: &str) {
     println!("   Message: \"{}\"", message);
     
     let pk_bytes = fs::read(pubkey_path).expect("Failed to read public key");
-    let pk = VerifyingKey::from_bytes(&pk_bytes).expect("Invalid public key");
+    // Конвертируем Vec<u8> в массив фиксированного размера
+    let pk_array: [u8; VERIFYING_KEY_SIZE] = pk_bytes
+        .try_into()
+        .expect("Invalid public key size");
+    let pk = VerifyingKey::from_bytes(&pk_array).expect("Invalid public key");
     
-    let sig_bytes = hex::decode(sig_hex).expect("Invalid hex signature");
-    let signature = falconed::Signature::from_bytes(&sig_bytes).expect("Invalid signature");
+    let sig_bytes_vec = hex::decode(sig_hex).expect("Invalid hex signature");
+    let sig_array: [u8; SIGNATURE_SIZE] = sig_bytes_vec
+        .try_into()
+        .expect("Invalid signature size");
+    let signature = falconed::Signature::from_bytes(&sig_array).expect("Invalid signature");
     
     match pk.verify(message.as_bytes(), &signature) {
         Ok(_) => {
@@ -132,15 +152,27 @@ fn show_info(key_path: &PathBuf) {
     
     match ext {
         "sk" => {
-            match SigningKey::from_bytes(&bytes) {
-                Ok(_) => println!("   Type: Valid FalconEd25519 private key"),
-                Err(e) => println!("   Type: Invalid key: {:?}", e),
+            if bytes.len() == SIGNING_KEY_SIZE {
+                match SigningKey::from_bytes(
+                    &bytes.try_into().unwrap()
+                ) {
+                    Ok(_) => println!("   Type: Valid FalconEd25519 private key"),
+                    Err(e) => println!("   Type: Invalid key: {:?}", e),
+                }
+            } else {
+                println!("   Type: Invalid key size (expected {}, got {})", SIGNING_KEY_SIZE, bytes.len());
             }
         }
         "pk" => {
-            match VerifyingKey::from_bytes(&bytes) {
-                Ok(_) => println!("   Type: Valid FalconEd25519 public key"),
-                Err(e) => println!("   Type: Invalid key: {:?}", e),
+            if bytes.len() == VERIFYING_KEY_SIZE {
+                match VerifyingKey::from_bytes(
+                    &bytes.try_into().unwrap()
+                ) {
+                    Ok(_) => println!("   Type: Valid FalconEd25519 public key"),
+                    Err(e) => println!("   Type: Invalid key: {:?}", e),
+                }
+            } else {
+                println!("   Type: Invalid key size (expected {}, got {})", VERIFYING_KEY_SIZE, bytes.len());
             }
         }
         _ => {
