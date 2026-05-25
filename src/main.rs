@@ -208,3 +208,21 @@ fn show_info(key_path: &PathBuf) {
         }
     }
 }
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_constants_sizes() {
+        assert_eq!(SIGNING_KEY_SIZE, 1313);
+        assert_eq!(VERIFYING_KEY_SIZE, 929);
+        assert_eq!(SIGNATURE_SIZE, 730);
+    }
+
+    #[test]
+    fn test_constants_not_zero() {
+        assert!(SIGNING_KEY_SIZE > 0);
+        assert!(VERIFYING_KEY_SIZE > 0);
+        assert!(SIGNATURE_SIZE > 0);
+    }
+}
