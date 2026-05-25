@@ -2,20 +2,30 @@
 name = "post-quantum-web3-security"
 version = "0.1.0"
 edition = "2021"
+description = "Open-source tools for protection against classical hacks and future quantum attacks in Web3"
+license = "MIT"
+authors = ["pissapisa500-debug"]
+repository = "https://github.com/pissapisa500-debug/post-quantum-web3-security"
 
 [dependencies]
-# Гибридные подписи Ed25519 + Falcon
+# Hybrid signatures Ed25519 + Falcon-512
 falconed = "0.1.0"
 
-# CLI парсер
+# CLI the parser
 clap = { version = "4.5", features = ["derive", "std"] }
 
-# Кодирование hex
+# Coding hex
 hex = "0.4"
 
-# Случайные числа
+# Random numbers (needed for key generation)
 rand_core = { version = "0.6", features = ["getrandom"] }
 
+# To work with errors
+anyhow = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true
 [profile.release]
 opt-level = 3
 lto = true
