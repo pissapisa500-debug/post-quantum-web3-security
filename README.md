@@ -31,6 +31,8 @@ We are building practical, hybrid post-quantum tools focused on Solana and Ether
 
 ## Quick Demo
 
+**Run these commands:**
+
 ```bash
 # Clone the repository
 git clone https://github.com/pissapisa500-debug/post-quantum-web3-security.git
@@ -42,11 +44,24 @@ cargo run --release -- generate --output mykey
 # Sign a message
 cargo run --release -- sign --key mykey.sk --message "Transfer 100 SOL"
 
-# Verify the signature
+# Verify the signature (replace with your actual signature hex)
 cargo run --release -- verify --pubkey mykey.pk --message "Transfer 100 SOL" --signature "YOUR_HEX_SIGNATURE"
+```
 
-## Getting Started
-```bash
-git clone https://github.com/pissapisa500-debug/post-quantum-web3-security.git
-cd post-quantum-web3-security
-cargo build
+**Expected output:**
+
+```
+🔐 Generating hybrid keys (Ed25519 + Falcon-512)...
+✅ Private key saved to: mykey.sk
+✅ Public key saved to: mykey.pk
+
+📊 Key sizes:
+   Private key: 1313 bytes
+   Public key:  929 bytes
+
+✍️ Signing message...
+✅ Signature (hex): <730-byte signature>
+
+🔍 Verifying signature...
+✅ Signature is VALID
+```
