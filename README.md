@@ -1,67 +1,61 @@
 # Post-Quantum Crypto Defender
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org/)
+[![Rust](https://img.shields.io/badge/Rust-1.80+-orange.svg)](https://www.rust-lang.org/)
+[![GitHub Stars](https://img.shields.io/github/stars/pissapisa500-debug/post-quantum-web3-security)](https://github.com/pissapisa500-debug/post-quantum-web3-security)
+[![GitHub Actions](https://github.com/pissapisa500-debug/post-quantum-web3-security/actions/workflows/rust.yml/badge.svg)](https://github.com/pissapisa500-debug/post-quantum-web3-security/actions)
 
-Open-source Rust tools and libraries to protect Web3 applications (wallets, signatures, smart contracts) against **classical exploits** and **future quantum computing attacks**.
+**Protecting Web3 applications from current and future quantum threats.**
 
-## Problem
+Open-source Rust library and CLI tools for **hybrid post-quantum cryptography**, focused primarily on **Solana** and **Aptos** ecosystems.
 
-- Quantum computers (via Shor's algorithm) threaten current elliptic curve cryptography (ECDSA, EdDSA)
-- "Harvest Now, Decrypt Later" attacks are already a realistic threat
-- Most protocols lack crypto-agility and easy migration paths
-- Solana has adopted Falcon-512 (SIMD-0461) but no production tooling exists
+---
 
-## Solution
+## 🎯 The Problem
 
-We are building practical, hybrid post-quantum tools focused on Solana and Ethereum ecosystems:
+- Quantum computers (Shor's algorithm) will break current signature schemes (Ed25519, secp256k1)
+- "Harvest Now, Decrypt Later" attacks are already a real threat
+- Solana has started adopting Falcon-512, but developers lack convenient migration tools
+- Aptos ecosystem has no production-ready post-quantum tooling
 
-- **Hybrid signature schemes** (ed25519 + Falcon-512 for Solana, secp256k1 + Dilithium for Ethereum)
-- **Key migration and rotation tools** (CLI-based)
-- **Crypto-agility libraries** (pluggable post-quantum algorithms)
+## ✅ Our Solution
 
-## Tech Stack
+We are building **practical hybrid cryptographic tools** that combine classical and post-quantum algorithms (Falcon-512, Dilithium).
+
+### Key Features
+- Hybrid signatures (Ed25519 + Falcon-512)
+- Secure key generation and management (1313/929/730 bytes)
+- Message signing & verification via CLI
+- Open-source (MIT license), ready for integration
+
+---
+
+## 🛠 Tech Stack
 
 | Component | Technology |
 |-----------|------------|
-| Language | Rust (performance + memory safety) |
-| Hybrid Signatures | `falconed` (ed25519 + Falcon-512) |
+| Language | Rust 1.80+ |
+| Hybrid Signatures | `falconed` (Ed25519 + Falcon-512) |
 | CLI | `clap` with derive macros |
-| Encoding | `hex` |
+| CI/CD | GitHub Actions (fmt, clippy, test, build) |
 
-## Quick Demo
+---
 
-**Run these commands:**
+## 🚀 Quick Start
 
 ```bash
 # Clone the repository
 git clone https://github.com/pissapisa500-debug/post-quantum-web3-security.git
 cd post-quantum-web3-security
 
-# Generate hybrid keys (ed25519 + Falcon-512)
+# Build the project
+cargo build --release
+
+# Generate hybrid keys
 cargo run --release -- generate --output mykey
 
 # Sign a message
 cargo run --release -- sign --key mykey.sk --message "Transfer 100 SOL"
 
-# Verify the signature (replace with your actual signature hex)
+# Verify signature (replace with your actual signature hex)
 cargo run --release -- verify --pubkey mykey.pk --message "Transfer 100 SOL" --signature "YOUR_HEX_SIGNATURE"
-```
-
-**Expected output:**
-
-```
-🔐 Generating hybrid keys (Ed25519 + Falcon-512)...
-✅ Private key saved to: mykey.sk
-✅ Public key saved to: mykey.pk
-
-📊 Key sizes:
-   Private key: 1313 bytes
-   Public key:  929 bytes
-
-✍️ Signing message...
-✅ Signature (hex): <730-byte signature>
-
-🔍 Verifying signature...
-✅ Signature is VALID
-```
