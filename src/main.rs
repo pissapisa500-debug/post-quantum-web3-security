@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use pq_crypto_defender::{
+use pq_web3_security::{
     Signature, SigningKey, VerifyingKey, SIGNATURE_SIZE, SIGNING_KEY_SIZE, VERIFYING_KEY_SIZE,
 };
 use std::fs;

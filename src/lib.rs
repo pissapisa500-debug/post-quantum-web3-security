@@ -1,5 +1,4 @@
-//! Post-Quantum Crypto Defender
-//!
+//! Post-Quantum Web3 Security
 //! Hybrid post-quantum signatures combining ed25519 (current standard)
 //! with Falcon-512 (NIST PQC) for Solana, Aptos, and other blockchains.
 
