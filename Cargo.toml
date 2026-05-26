@@ -6,7 +6,7 @@ description = "Post-Quantum Web3 Security — hybrid signatures (ed25519 + Falco
 license = "MIT"
 authors = ["pissapisa500-debug"]
 repository = "https://github.com/pissapisa500-debug/post-quantum-web3-security"
-keywords = ["cryptography", "post-quantum", "solana", "aptos", "falcon", "web3"]
+keywords = ["cryptography", "post-quantum", "solana", "falcon", "web3"]
 categories = ["cryptography", "development-tools"]
 
 [dependencies]

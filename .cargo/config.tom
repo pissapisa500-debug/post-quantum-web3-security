@@ -1,0 +1,2 @@
+[package]
+exclude = ["*.sk", "*.pk", "mykey.*", "demo.*", "target/", ".git/", ".github/"]
