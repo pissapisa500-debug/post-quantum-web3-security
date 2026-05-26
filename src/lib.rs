@@ -3,7 +3,10 @@
 //! Hybrid post-quantum signatures combining Ed25519 (current standard)
 //! with Falcon-512 (NIST PQC) for Solana, Aptos, and other blockchains.
 
-use falconed::{SigningKey as FalconSigningKey, VerifyingKey as FalconVerifyingKey, Signature as FalconSignature};
+use falconed::{
+    Signature as FalconSignature, SigningKey as FalconSigningKey,
+    VerifyingKey as FalconVerifyingKey,
+};
 use rand_core::OsRng;
 
 /// Private key size in bytes (1313)
@@ -41,7 +44,8 @@ impl SigningKey {
 
     /// Sign a message, returns hybrid signature
     pub fn sign(&self, message: &[u8]) -> Result<Signature, &'static str> {
-        self.0.sign(message)
+        self.0
+            .sign(message)
             .map(Signature)
             .map_err(|_| "Signing failed")
     }
@@ -65,7 +69,8 @@ impl VerifyingKey {
 
     /// Verify a signature against a message
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), &'static str> {
-        self.0.verify(message, &signature.0)
+        self.0
+            .verify(message, &signature.0)
             .map_err(|_| "Invalid signature")
     }
 }
