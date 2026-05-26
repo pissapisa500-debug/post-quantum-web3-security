@@ -1,4 +1,4 @@
-# Post-Quantum Crypto Defender — Roadmap
+# pq-web3-securityp
 
 [![Status](https://img.shields.io/badge/Status-Active%20Development-green.svg)](https://github.com/pissapisa500-debug/post-quantum-web3-security)
 

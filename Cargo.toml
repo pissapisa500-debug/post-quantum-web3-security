@@ -1,8 +1,8 @@
 [package]
-name = "pq-crypto-defender"
+name = "post-quantum-web3-security"
 version = "0.1.0"
 edition = "2021"
-description = "Hybrid post-quantum signatures (ed25519 + Falcon-512) for Solana, Aptos, and other blockchains"
+description = "Post-Quantum Web3 Security — hybrid signatures (ed25519 + Falcon-512) for Solana, Aptos, and Ethereum"
 license = "MIT"
 authors = ["pissapisa500-debug"]
 repository = "https://github.com/pissapisa500-debug/post-quantum-web3-security"
