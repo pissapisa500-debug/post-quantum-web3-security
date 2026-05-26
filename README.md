@@ -36,7 +36,7 @@ We build **practical hybrid cryptographic tools** combining classical and post-q
 ## 🛠 Tech Stack
 
 - **Language**: Rust 1.80+
-- **Cryptography**: `pqcrypto-falcon`, `ed25519-dalek`, custom hybrid scheme
+- **Cryptography**: `falconed` (Ed25519 + Falcon-512)
 - **CLI**: Clap
 - **CI/CD**: GitHub Actions (fmt, clippy, tests, build)
 
@@ -45,9 +45,11 @@ We build **practical hybrid cryptographic tools** combining classical and post-q
 ## 🚀 Quick Start
 
 ```bash
+# Clone the repository
 git clone https://github.com/pissapisa500-debug/post-quantum-web3-security.git
 cd post-quantum-web3-security
 
+# Build the project
 cargo build --release
 
 # Generate hybrid keypair
