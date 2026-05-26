@@ -10,16 +10,16 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  # Job 1: Проверка сборки и тестов
   build-and-test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     
     - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
+      uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: stable
-        override: true
+        components: rustfmt, clippy
     
     - name: Cache dependencies
       uses: actions/cache@v3
@@ -41,26 +41,26 @@ jobs:
     - name: Build release
       run: cargo build --release --verbose
 
+  # Job 2: Проверка форматирования кода
   fmt:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: stable
         components: rustfmt
     - name: Check formatting
       run: cargo fmt --all -- --check
 
+  # Job 3: Проверка линтером (Clippy)
   clippy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: stable
         components: clippy
     - name: Run Clippy
       run: cargo clippy -- -D warnings
