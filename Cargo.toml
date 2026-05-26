@@ -1,31 +1,24 @@
 [package]
-name = "post-quantum-web3-security"
+name = "pq-crypto-defender"
 version = "0.1.0"
 edition = "2021"
-description = "Open-source tools for protection against classical hacks and future quantum attacks in Web3"
+description = "Hybrid post-quantum signatures (ed25519 + Falcon-512) for Solana, Aptos, and other blockchains"
 license = "MIT"
 authors = ["pissapisa500-debug"]
 repository = "https://github.com/pissapisa500-debug/post-quantum-web3-security"
+keywords = ["cryptography", "post-quantum", "solana", "aptos", "falcon", "web3"]
+categories = ["cryptography", "development-tools"]
 
 [dependencies]
-# Hybrid signatures Ed25519 + Falcon-512
 falconed = "0.1.0"
-
-# CLI the parser
 clap = { version = "4.5", features = ["derive", "std"] }
-
-# Coding hex
 hex = "0.4"
-
-# Random numbers (needed for key generation)
 rand_core = { version = "0.6", features = ["getrandom"] }
-
-# To work with errors
 anyhow = "1.0"
+
+[dev-dependencies]
+tempfile = "3.0"
 
 [profile.release]
 opt-level = 3
 lto = true
-
-[dev-dependencies]
-tempfile = "3.0"
