@@ -211,6 +211,8 @@ fn show_info(key_path: &PathBuf) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
+    use tempfile::tempdir;
 
     #[test]
     fn test_constants_sizes() {
@@ -224,5 +226,46 @@ mod tests {
         assert!(SIGNING_KEY_SIZE > 0);
         assert!(VERIFYING_KEY_SIZE > 0);
         assert!(SIGNATURE_SIZE > 0);
+    }
+
+    #[test]
+    fn test_key_generation_creates_files() {
+        let dir = tempdir().unwrap();
+        let path = dir.path().join("testkey");
+        
+        let sk = SigningKey::generate(&mut OsRng);
+        let pk = sk.verifying_key().unwrap();
+        
+        let sk_path = path.with_extension("sk");
+        let pk_path = path.with_extension("pk");
+        
+        fs::write(&sk_path, sk.to_bytes()).unwrap();
+        fs::write(&pk_path, pk.to_bytes()).unwrap();
+        
+        assert!(sk_path.exists());
+        assert!(pk_path.exists());
+    }
+    
+    #[test]
+    fn test_sign_and_verify() {
+        let sk = SigningKey::generate(&mut OsRng);
+        let pk = sk.verifying_key().unwrap();
+        let message = b"Test message for quantum resistance";
+        
+        let signature = sk.sign(message).unwrap();
+        assert!(pk.verify(message, &signature).is_ok());
+    }
+    
+    #[test]
+    fn test_wrong_signature_fails() {
+        let sk1 = SigningKey::generate(&mut OsRng);
+        let pk1 = sk1.verifying_key().unwrap();
+        let sk2 = SigningKey::generate(&mut OsRng);
+        
+        let message = b"Important transaction";
+        let signature = sk2.sign(message).unwrap();
+        
+        // Подпись от другого ключа не должна пройти проверку
+        assert!(pk1.verify(message, &signature).is_err());
     }
 }
