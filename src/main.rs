@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 use post_quantum_web3_security::{
-    SigningKey, VerifyingKey, Signature, SIGNING_KEY_SIZE, VERIFYING_KEY_SIZE, SIGNATURE_SIZE
+    Signature, SigningKey, VerifyingKey, SIGNATURE_SIZE, SIGNING_KEY_SIZE, VERIFYING_KEY_SIZE,
 };
 use std::fs;
 use std::path::{Path, PathBuf};
