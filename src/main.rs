@@ -3,7 +3,7 @@ use pq_crypto_defender::{
     Signature, SigningKey, VerifyingKey, SIGNATURE_SIZE, SIGNING_KEY_SIZE, VERIFYING_KEY_SIZE,
 };
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
 #[command(name = "pqcrypto")]
@@ -65,7 +65,7 @@ fn main() {
     }
 }
 
-fn generate_keys(output: &PathBuf) {
+fn generate_keys(output: &Path) {
     println!("🔐 Generating hybrid keys (Ed25519 + Falcon-512)...");
 
     let sk = SigningKey::generate();
@@ -84,7 +84,7 @@ fn generate_keys(output: &PathBuf) {
     println!("   Public key:  {} bytes", VERIFYING_KEY_SIZE);
 }
 
-fn sign_message(key_path: &PathBuf, message: &str) {
+fn sign_message(key_path: &Path, message: &str) {
     println!("✍️ Signing message...");
     println!("   Message: \"{}\"", message);
 
@@ -113,7 +113,7 @@ fn sign_message(key_path: &PathBuf, message: &str) {
     println!("\n📊 Signature size: {} bytes", SIGNATURE_SIZE);
 }
 
-fn verify_signature(pubkey_path: &PathBuf, message: &str, sig_hex: &str) {
+fn verify_signature(pubkey_path: &Path, message: &str, sig_hex: &str) {
     println!("🔍 Verifying signature...");
     println!("   Message: \"{}\"", message);
 
@@ -155,7 +155,7 @@ fn verify_signature(pubkey_path: &PathBuf, message: &str, sig_hex: &str) {
     }
 }
 
-fn show_info(key_path: &PathBuf) {
+fn show_info(key_path: &Path) {
     println!("📋 Key info for: {}", key_path.display());
 
     let bytes = fs::read(key_path).expect("Failed to read key");
