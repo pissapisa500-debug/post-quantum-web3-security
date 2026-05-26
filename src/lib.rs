@@ -1,91 +1,87 @@
 //! Post-Quantum Web3 Security
-//! Hybrid post-quantum signatures combining ed25519 (current standard)
+//!
+//! Hybrid post-quantum signatures combining Ed25519 (current standard)
 //! with Falcon-512 (NIST PQC) for Solana, Aptos, and other blockchains.
 
-use falconed::{
-    Signature as FalconSignature, SigningKey as FalconSigningKey,
-    VerifyingKey as FalconVerifyingKey,
-};
+use falconed::{SigningKey as FalconSigningKey, VerifyingKey as FalconVerifyingKey, Signature as FalconSignature};
 use rand_core::OsRng;
 
-/// Размер приватного ключа в байтах (1313)
+/// Private key size in bytes (1313)
 pub const SIGNING_KEY_SIZE: usize = 1313;
-/// Размер публичного ключа в байтах (929)
+/// Public key size in bytes (929)
 pub const VERIFYING_KEY_SIZE: usize = 929;
-/// Размер подписи в байтах (730)
+/// Signature size in bytes (730)
 pub const SIGNATURE_SIZE: usize = 730;
 
-/// Гибридный приватный ключ (ed25519 + Falcon-512)
+/// Hybrid private key (Ed25519 + Falcon-512)
 pub struct SigningKey(FalconSigningKey);
 
 impl SigningKey {
-    /// Генерирует новую гибридную ключевую пару
+    /// Generate a new hybrid key pair
     pub fn generate() -> Self {
         Self(FalconSigningKey::generate(&mut OsRng))
     }
 
-    /// Создает ключ из байтов (массив фиксированного размера)
+    /// Create a key from fixed-size byte array
     pub fn from_bytes(bytes: &[u8; SIGNING_KEY_SIZE]) -> Result<Self, &'static str> {
         FalconSigningKey::from_bytes(bytes)
             .map(Self)
             .map_err(|_| "Invalid private key bytes")
     }
 
-    /// Возвращает байтовое представление ключа
+    /// Export key as byte array
     pub fn to_bytes(&self) -> [u8; SIGNING_KEY_SIZE] {
         self.0.to_bytes()
     }
 
-    /// Возвращает соответствующий публичный ключ
+    /// Get the corresponding public key
     pub fn verifying_key(&self) -> VerifyingKey {
         VerifyingKey(self.0.verifying_key().unwrap())
     }
 
-    /// Подписывает сообщение, возвращает гибридную подпись
+    /// Sign a message, returns hybrid signature
     pub fn sign(&self, message: &[u8]) -> Result<Signature, &'static str> {
-        self.0
-            .sign(message)
+        self.0.sign(message)
             .map(Signature)
             .map_err(|_| "Signing failed")
     }
 }
 
-/// Гибридный публичный ключ (ed25519 + Falcon-512)
+/// Hybrid public key (Ed25519 + Falcon-512)
 pub struct VerifyingKey(FalconVerifyingKey);
 
 impl VerifyingKey {
-    /// Создает ключ из байтов (массив фиксированного размера)
+    /// Create a public key from fixed-size byte array
     pub fn from_bytes(bytes: &[u8; VERIFYING_KEY_SIZE]) -> Result<Self, &'static str> {
         FalconVerifyingKey::from_bytes(bytes)
             .map(Self)
             .map_err(|_| "Invalid public key bytes")
     }
 
-    /// Возвращает байтовое представление ключа
+    /// Export key as byte array
     pub fn to_bytes(&self) -> [u8; VERIFYING_KEY_SIZE] {
         self.0.to_bytes()
     }
 
-    /// Проверяет подпись сообщения
+    /// Verify a signature against a message
     pub fn verify(&self, message: &[u8], signature: &Signature) -> Result<(), &'static str> {
-        self.0
-            .verify(message, &signature.0)
+        self.0.verify(message, &signature.0)
             .map_err(|_| "Invalid signature")
     }
 }
 
-/// Гибридная подпись (ed25519 + Falcon-512)
+/// Hybrid signature (Ed25519 + Falcon-512)
 pub struct Signature(FalconSignature);
 
 impl Signature {
-    /// Создает подпись из байтов (массив фиксированного размера)
+    /// Create a signature from fixed-size byte array
     pub fn from_bytes(bytes: &[u8; SIGNATURE_SIZE]) -> Result<Self, &'static str> {
         FalconSignature::from_bytes(bytes)
             .map(Self)
             .map_err(|_| "Invalid signature bytes")
     }
 
-    /// Возвращает байтовое представление подписи
+    /// Export signature as byte array
     pub fn to_bytes(&self) -> [u8; SIGNATURE_SIZE] {
         self.0.to_bytes()
     }
@@ -96,31 +92,28 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_lib_constants() {
+    fn test_constants() {
         assert_eq!(SIGNING_KEY_SIZE, 1313);
         assert_eq!(VERIFYING_KEY_SIZE, 929);
         assert_eq!(SIGNATURE_SIZE, 730);
     }
 
     #[test]
-    fn test_lib_sign_and_verify() {
+    fn test_sign_and_verify() {
         let sk = SigningKey::generate();
         let pk = sk.verifying_key();
-        let msg = b"Library test message";
-
+        let msg = b"Test message";
         let sig = sk.sign(msg).unwrap();
         assert!(pk.verify(msg, &sig).is_ok());
     }
 
     #[test]
-    fn test_lib_wrong_key_fails() {
+    fn test_wrong_signature_fails() {
         let sk1 = SigningKey::generate();
         let pk1 = sk1.verifying_key();
         let sk2 = SigningKey::generate();
-
-        let msg = b"Secret transaction";
+        let msg = b"Secret";
         let sig = sk2.sign(msg).unwrap();
-
         assert!(pk1.verify(msg, &sig).is_err());
     }
 }
